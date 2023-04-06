@@ -24,6 +24,7 @@ require("lazy").setup({
 
     "nvim-lua/popup.nvim",         -- Popup API from vim in Neovim
     "nvim-lua/plenary.nvim",       -- Lua functions used by many plugins
+    "jghauser/mkdir.nvim",          -- Create directories on save
 
     -- Colorizer for Neovim
     {
@@ -191,17 +192,6 @@ require("lazy").setup({
                     { name = "vsnip" },
                 },
             }
-        end,
-    },
-
-
-    -- Lines to LSP diagnostics.
-    {
-        "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
-        config = function()
-            require("lsp_lines").setup()
-            vim.diagnostic.config({virtual_text = false})
-            vim.diagnostic.config({ virtual_lines = { only_current_line = true } })
         end,
     },
 
