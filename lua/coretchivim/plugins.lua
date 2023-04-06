@@ -24,7 +24,14 @@ require("lazy").setup({
 
     "nvim-lua/popup.nvim",         -- Popup API from vim in Neovim
     "nvim-lua/plenary.nvim",       -- Lua functions used by many plugins
-    "norcalli/nvim-colorizer.lua", -- Colorizer for Neovim
+
+    -- Colorizer for Neovim
+    {
+        "norcalli/nvim-colorizer.lua",
+        config = function()
+            require("colorizer").setup()
+        end,
+    },
 
 
     -- Monokai
