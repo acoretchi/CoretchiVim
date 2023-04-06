@@ -1,3 +1,3 @@
-require("coretchivim.options")
-require("coretchivim.keymaps")
-require("coretchivim.plugins")
+require "coretchivim.options"
+require "coretchivim.keymaps"
+require "coretchivim.plugins"

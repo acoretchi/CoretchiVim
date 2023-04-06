@@ -1,11 +1,14 @@
 -- Shorten function name for convenience
 local keymap = vim.api.nvim_set_keymap
 
--- Stop recursive expanding of remaps and silence functions
-local opts = {
-    noremap = true,
-    silent = true,
-}
+local opts = { noremap = true, silent = true }
+local expr = { noremap = true, silent = true, expr = true }
+
+
+-- Leader Binds
+vim.g.mapleader = " "
+keymap("n", "<leader>f", ":NvimTreeToggle<CR>", opts) -- Leader + f to toggle file tree
+keymap("n", "<leader>h", ":noh<CR>", opts) -- Leader + h to clear highlights
 
 -- Normal --
 -- Make j and k move cursor according to displayed lines
