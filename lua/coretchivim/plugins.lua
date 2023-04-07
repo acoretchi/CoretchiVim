@@ -38,6 +38,7 @@ require("lazy").setup({
     -- Monokai
     {
         "tanvirtin/monokai.nvim",
+        priority=1000, -- Ensure our colours are loaded first.
         lazy = false,
         config = function()
             local monokai = require('monokai')
@@ -83,11 +84,18 @@ require("lazy").setup({
     -- Tab Line
     {
         'romgrk/barbar.nvim',
+        lazy = false,
         dependencies = 'nvim-tree/nvim-web-devicons',
         init = function() vim.g.barbar_auto_setup = false end,
         opts = {
             auto_hide = true,
         },
+        config = function()
+            require("nvim-web-devicons").setup {
+                color_icons=true;
+                default=true;
+            }
+        end,
         version = '^1.0.0', -- optional: only update when a new 1.x version is released
     },
 
