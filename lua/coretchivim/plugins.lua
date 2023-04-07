@@ -40,7 +40,12 @@ require("lazy").setup({
         "tanvirtin/monokai.nvim",
         lazy = false,
         config = function()
-            require('monokai').setup { palette = require('monokai').soda }
+            local monokai = require('monokai')
+            local palette = monokai.soda
+            palette.base2 = "#111111"
+            monokai.setup {
+                palette = palette,
+            }
         end,
     },
 
@@ -80,6 +85,9 @@ require("lazy").setup({
         'romgrk/barbar.nvim',
         dependencies = 'nvim-tree/nvim-web-devicons',
         init = function() vim.g.barbar_auto_setup = false end,
+        opts = {
+            auto_hide = true,
+        },
         version = '^1.0.0', -- optional: only update when a new 1.x version is released
     },
 
@@ -205,6 +213,15 @@ require("lazy").setup({
     },
 
 
+    -- Auto pairs.
+    {
+        "windwp/nvim-autopairs",
+        config = function()
+            require("nvim-autopairs").setup {}
+        end,
+    },
+
+
     -- Surround actions
     {
         "kylechui/nvim-surround",
@@ -227,16 +244,17 @@ require("lazy").setup({
     -- File Tree
     {
         "kyazdani42/nvim-tree.lua",
+        dependencies = 'nvim-tree/nvim-web-devicons',
         config = function()
             vim.g.loaded_netrw = 1
             vim.g.loaded_netrwPlugin = 1
             require("nvim-tree").setup {
-                sort_by = "case_sensitive",
+                hijack_cursor = true,
+                view = {
+                    width = 40,
+                },
                 renderer = {
                     group_empty = true,
-                },
-                filters = {
-                    dotfiles = true,
                 },
             }
         end,

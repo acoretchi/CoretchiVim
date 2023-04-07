@@ -9,6 +9,12 @@ local expr = { noremap = true, silent = true, expr = true }
 vim.g.mapleader = " "
 keymap("n", "<leader>f", ":NvimTreeToggle<CR>", opts) -- Leader + f to toggle file tree
 keymap("n", "<leader>h", ":noh<CR>", opts) -- Leader + h to clear highlights
+keymap("n", "<leader>.", "<Cmd>BufferNext<CR>", opts)
+keymap("n", "<leader>,", "<Cmd>BufferPrevious<CR>", opts)
+keymap("n", "<leader>>", "<Cmd>BufferMoveNext<CR>", opts)
+keymap("n", "<leader><", "<Cmd>BufferMovePrevious<CR>", opts)
+keymap("n", "<leader>tt", "<Cmd>BufferPick<CR>", opts)
+keymap("n", "<leader>tq", "<Cmd>BufferClose<CR>", opts)
 
 -- Normal --
 -- Make j and k move cursor according to displayed lines
