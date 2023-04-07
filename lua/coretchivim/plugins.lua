@@ -42,7 +42,7 @@ require("lazy").setup({
         config = function()
             local monokai = require('monokai')
             local palette = monokai.soda
-            palette.base2 = "#111111"
+            palette.base2 = "#121212"
             monokai.setup {
                 palette = palette,
             }
