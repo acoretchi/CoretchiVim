@@ -90,12 +90,6 @@ require("lazy").setup({
         opts = {
             auto_hide = true,
         },
-        config = function()
-            require("nvim-web-devicons").setup {
-                color_icons=true;
-                default=true;
-            }
-        end,
         version = '^1.0.0', -- optional: only update when a new 1.x version is released
     },
 
