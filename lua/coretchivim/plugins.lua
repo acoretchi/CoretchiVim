@@ -157,8 +157,8 @@ require("lazy").setup({
     {
         "github/copilot.vim",
         config = function()
-            local options = { noremap = true, silent = true, expr = true }
-            vim.keymap.set("i", "<C-c>", "copilot#Accept('')", options)
+            local options = { noremap = true, silent = true, expr = true, replace_keycodes=false }
+            vim.keymap.set("i", "<C-c>", "copilot#Accept('<CR>')", options)
             vim.g.copilot_no_tab_map = true
         end,
     },
