@@ -34,6 +34,9 @@ local options = {
 
     -- Colouring
     termguicolors = true,
+
+    -- Use system clipboard
+    clipboard = "unnamedplus",
 }
 
 -- Iterate over options defined above and set them accordingly

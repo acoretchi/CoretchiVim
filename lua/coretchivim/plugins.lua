@@ -252,14 +252,54 @@ require("lazy").setup({
             vim.g.loaded_netrwPlugin = 1
             require("nvim-tree").setup {
                 hijack_cursor = true,
+                hijack_unnamed_buffer_when_opening = true,
                 view = {
                     width = 40,
                 },
                 renderer = {
                     group_empty = true,
                 },
+                update_focused_file = {
+                    enable = true,
+                    update_root = true,
+                    update_cwd = true,
+                },
+                filters = {
+                    git_clean = true,
+                }
             }
         end,
     },
+
+    -- Start Screen
+    {
+        "glepnir/dashboard-nvim",
+        event = "VimEnter",
+        config = function()
+            -- TODO: Auto center the header.
+            -- local col_str = vim.cmd("set co")
+            local header = require("coretchivim.hal")
+            require("dashboard").setup {
+                theme = "doom",
+                config = {
+                    header = header,
+                    center = {
+                        {
+                            desc=""
+                        }
+                    },
+                    disable_move = true,
+                }
+            }
+            vim.api.nvim_create_autocmd("UIEnter", {
+                command="lua vim.cmd('AnsiEsc') require('terminal').attach_to_buffer(0) "
+            })
+        end,
+        dependencies = {
+            {"nvim-tree/nvim-web-devicons"},
+            {"norcalli/nvim-terminal.lua"},  -- Colour ANSI Escape codes
+            {"powerman/vim-plugin-AnsiEsc"}, -- Remove the ANSI Escape codes from the screen.
+        }
+    }
 
 })
