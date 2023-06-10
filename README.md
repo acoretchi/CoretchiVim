@@ -1,3 +1,4 @@
-## CoretchiVim
-My personal Neovim configuration, complete with LSP support, Treesitter syntax highlighting, as well as some other helpful utility plugins.
+# CoretchiVim
+My personal Neovim configuration.
+
 To install, just clone this repo into your nvim config folder.
