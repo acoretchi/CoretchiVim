@@ -13,14 +13,18 @@ keymap("n", "<Space>", "<NOP>", noremap)         -- Unbind space in normal mode
 keymap("n", "<leader>h", ":noh<CR>", noremap)                    -- Leader + h to clear highlights
 keymap("n", "<leader>f", ":NvimTreeToggle<CR>", noremap)         -- Leader + f to toggle file tree
 
-
+keymap("n", "<leader>s", "<C-w>", noremap)                       -- Leader + s for splits
 
 keymap("n", "<leader>.", "<Cmd>BufferNext<CR>", noremap)         -- Leader buffer movement
 keymap("n", "<leader>,", "<Cmd>BufferPrevious<CR>", noremap)
 keymap("n", "<leader>>", "<Cmd>BufferMoveNext<CR>", noremap)
 keymap("n", "<leader><", "<Cmd>BufferMovePrevious<CR>", noremap)
-keymap("n", "<leader>tt", "<Cmd>BufferPick<CR>", noremap)
-keymap("n", "<leader>tq", "<Cmd>BufferClose<CR>", noremap)
+keymap("n", "<leader>q", "<Cmd>BufferClose<CR>", noremap)
+
+keymap("n", "<leader>k", "k{gj", noremap)                           -- Leader + k to move up
+keymap("n", "<leader>j", "j}gk", noremap)                           -- Leader + j to move down
+keymap("n", "<leader>l", "g_", noremap)                          -- Leader + l to move to end of line
+keymap("n", "<leader>h", "^", noremap)                           -- Leader + h to move to start of line
 
 
 -- Normal --
