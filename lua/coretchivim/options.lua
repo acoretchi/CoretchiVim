@@ -44,3 +44,10 @@ local options = {
 for k, v in pairs(options) do
     vim.opt[k] = v
 end
+
+vim.diagnostic.config({
+    underline = true,
+    signs = true,
+    virtual_text = false,
+    update_in_insert = false,
+})
