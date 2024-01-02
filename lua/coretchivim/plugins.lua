@@ -54,6 +54,7 @@ require("lazy").setup({
     -- Status Bar
     {
         "hoob3rt/lualine.nvim",
+        dependencies = 'nvim-tree/nvim-web-devicons',
         config = function()
             require("lualine").setup {
                 options = {
@@ -62,7 +63,7 @@ require("lazy").setup({
                 },
                 sections = {
                     lualine_a = { "mode" },
-                    lualine_b = { "branch" },
+                    lualine_b = { "branch", "diff", "diagnostics" },
                     lualine_c = { "filename" },
                     lualine_x = { "encoding", "filetype" },
                     lualine_y = { "progress" },
@@ -98,6 +99,7 @@ require("lazy").setup({
     {
         "williamboman/mason.nvim",
         lazy = false,
+        priority = 500,
         build = ":MasonUpdate",
         config = function()
             require("mason").setup {}
@@ -108,6 +110,7 @@ require("lazy").setup({
     -- LSP
     {
         "neovim/nvim-lspconfig",
+        lazy = false,
         dependencies = {
             "williamboman/mason-lspconfig.nvim",
         },
@@ -121,6 +124,7 @@ require("lazy").setup({
                     require("lspconfig")[server_name].setup {}
                 end,
             }
+            local lspconfig = require("lspconfig")
         end,
     },
 
@@ -264,9 +268,6 @@ require("lazy").setup({
                     update_root = true,
                     update_cwd = true,
                 },
-                filters = {
-                    git_clean = true,
-                }
             }
         end,
     },
@@ -300,6 +301,29 @@ require("lazy").setup({
             {"norcalli/nvim-terminal.lua"},  -- Colour ANSI Escape codes
             {"powerman/vim-plugin-AnsiEsc"}, -- Remove the ANSI Escape codes from the screen.
         }
-    }
+    },
 
+    -- More icons
+    {
+        'yamatsum/nvim-nonicons',
+        requires = {'kyazdani42/nvim-web-devicons'},
+        priority = 500,
+    },
+
+    -- Scrollbar
+    {
+        "dstein64/nvim-scrollview",
+        config = function()
+            vim.g.scrollview_excluded_filetypes = { "dashboard", "NvimTree", "terminal" }
+        end,
+    },
+
+
+    -- Auto tags
+    {
+        "windwp/nvim-ts-autotag",
+        config = function()
+            require("nvim-ts-autotag").setup()
+        end,
+    },
 })

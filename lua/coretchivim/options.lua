@@ -29,7 +29,8 @@ local options = {
     wrap = true,
 
     -- Folding
-    foldmethod = "indent",
+    foldmethod = "expr",
+    foldexpr = "nvim_treesitter#foldexpr()",
     foldlevel = 99,
 
     -- Colouring

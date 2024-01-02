@@ -10,7 +10,7 @@ local expr = { noremap = true, silent = true, expr = true }
 vim.g.mapleader = " "
 keymap("n", "<Space>", "<NOP>", noremap)         -- Unbind space in normal mode
 
-keymap("n", "<leader>h", ":noh<CR>", noremap)                    -- Leader + h to clear highlights
+keymap("n", "<leader>n", ":noh<CR>", noremap)                    -- Leader + h to clear highlights
 keymap("n", "<leader>f", ":NvimTreeToggle<CR>", noremap)         -- Leader + f to toggle file tree
 
 keymap("n", "<leader>s", "<C-w>", noremap)                       -- Leader + s for splits
@@ -26,11 +26,19 @@ keymap("n", "<leader>j", "j}gk", noremap)                           -- Leader + 
 keymap("n", "<leader>l", "g_", noremap)                          -- Leader + l to move to end of line
 keymap("n", "<leader>h", "^", noremap)                           -- Leader + h to move to start of line
 
+keymap("n", "<leader>r", "<Cmd>lua vim.lsp.buf.references()<CR>", noremap)      -- Leader + r to open references")
+
 
 -- Normal --
 -- Make j and k move cursor according to displayed lines
 keymap("n", "j", "gj", noremap)
 keymap("n", "k", "gk", noremap)
+keymap("n", "gD", "<Cmd>lua vim.lsp.buf.declaration()<CR>", noremap)
+keymap("n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>", noremap)
+keymap("n", "H", "<Cmd>lua vim.lsp.buf.hover()<CR>", noremap)
+keymap("n", "R", "<Cmd>lua vim.lsp.references()<CR>", noremap)
+keymap("n", "F", "za", noremap)
+
 
 
 -- Insert --
