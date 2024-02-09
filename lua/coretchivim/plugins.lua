@@ -374,4 +374,12 @@ require("lazy").setup({
             require("nvim-ts-autotag").setup()
         end,
     },
+
+    -- Git Signs
+    {
+        "lewis6991/gitsigns.nvim",
+        config = function()
+            require("gitsigns").setup {}
+        end,
+    },
 })
