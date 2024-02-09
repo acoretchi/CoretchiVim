@@ -151,11 +151,52 @@ require("lazy").setup({
                 textobjects = {
                     select = {
                         enable = true,
+                        lookahead = true,
                         keymaps = {
+                            ["aa"] = "@parameter.outer",
+                            ["ia"] = "@parameter.inner",
                             ["af"] = "@function.outer",
                             ["if"] = "@function.inner",
                             ["ac"] = "@class.outer",
                             ["ic"] = "@class.inner",
+                        },
+                        selection_modes = {
+                            ["@function.outer"] = "V",
+                            ["@class.outer"] = "V",
+                        },
+                    },
+                },
+            }
+        end,
+    },
+
+    {
+        "nvim-treesitter/nvim-treesitter-textobjects",
+        after = "nvim-treesitter",
+        requires = "nvim-treesitter/nvim-treesitter",
+    },
+
+    {
+        "nvim-treesitter/nvim-treesitter-refactor",
+        after = "nvim-treesitter",
+        requires = "nvim-treesitter/nvim-treesitter",
+        config = function()
+            require("nvim-treesitter.configs").setup {
+                refactor = {
+                    highlight_definitions = { enable = true },
+                    highlight_current_scope = { enable = false },
+                    smart_rename = {
+                        enable = true,
+                        keymaps = {
+                            smart_rename = "grr",
+                        },
+                    },
+                    navigation = {
+                        enable = true,
+                        keymaps = {
+                            goto_definition = "gd",
+                            goto_next_usage = "gu",
+                            goto_previous_usage = "gU",
                         },
                     },
                 },
