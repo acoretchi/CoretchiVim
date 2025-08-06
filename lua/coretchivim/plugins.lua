@@ -205,17 +205,6 @@ require("lazy").setup({
     },
 
 
-    -- Copilot.
-    {
-        "github/copilot.vim",
-        config = function()
-            local options = { noremap = true, silent = true, expr = true, replace_keycodes=false }
-            vim.keymap.set("i", "<C-c>", "copilot#Accept('<CR>')", options)
-            vim.g.copilot_no_tab_map = true
-        end,
-    },
-
-
     -- Completions (call after Copilot to override Tab behavior).
     {
         "hrsh7th/nvim-cmp",
