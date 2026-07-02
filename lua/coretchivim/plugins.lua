@@ -26,9 +26,10 @@ require("lazy").setup({
     "nvim-lua/plenary.nvim",       -- Lua functions used by many plugins
     "jghauser/mkdir.nvim",          -- Create directories on save
 
-    -- Colorizer for Neovim
+    -- Colorizer for Neovim (maintained fork; the original is abandoned and
+    -- uses APIs deprecated in recent nvim versions)
     {
-        "norcalli/nvim-colorizer.lua",
+        "catgoose/nvim-colorizer.lua",
         config = function()
             require("colorizer").setup()
         end,
@@ -115,16 +116,9 @@ require("lazy").setup({
             "williamboman/mason-lspconfig.nvim",
         },
         config = function()
+            -- v2 enables installed servers automatically via vim.lsp.enable(),
+            -- replacing the removed setup_handlers().
             require("mason-lspconfig").setup {}
-            require("mason-lspconfig").setup_handlers {
-                -- The first entry (without a key) will be the default handler
-                -- and will be called for each installed server that doesn't have
-                -- a dedicated handler.
-                function (server_name) -- default handler (optional)
-                    require("lspconfig")[server_name].setup {}
-                end,
-            }
-            local lspconfig = require("lspconfig")
             vim.o.updatetime = 250
             vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
                 group = vim.api.nvim_create_augroup("float_diagnostic", { clear = true }),
@@ -137,70 +131,61 @@ require("lazy").setup({
 
 
     -- Treesitter
+    -- The legacy "master" branch is archived and unsupported on nvim 0.12+,
+    -- so we use the rewritten "main" branch and its new API.
     {
         "nvim-treesitter/nvim-treesitter",
-        run = ":TSUpdate",
+        branch = "main",
+        lazy = false,
+        build = ":TSUpdate",
         config = function()
-            require("nvim-treesitter.configs").setup {
-                highlight = {
-                    enable = true,
-                },
-                indent = {
-                    enable = true,
-                },
-                textobjects = {
-                    select = {
-                        enable = true,
-                        lookahead = true,
-                        keymaps = {
-                            ["aa"] = "@parameter.outer",
-                            ["ia"] = "@parameter.inner",
-                            ["af"] = "@function.outer",
-                            ["if"] = "@function.inner",
-                            ["ac"] = "@class.outer",
-                            ["ic"] = "@class.inner",
-                        },
-                        selection_modes = {
-                            ["@function.outer"] = "V",
-                            ["@class.outer"] = "V",
-                        },
-                    },
-                },
+            require("nvim-treesitter").setup {}
+            -- Parsers must be installed explicitly on the main branch.
+            require("nvim-treesitter").install {
+                "bash", "c", "css", "dockerfile", "go", "html", "javascript",
+                "json", "lua", "markdown", "markdown_inline", "python",
+                "query", "rust", "toml", "tsx", "typescript", "vim",
+                "vimdoc", "yaml",
             }
+            -- Highlighting and indentation are enabled per-buffer now.
+            vim.api.nvim_create_autocmd("FileType", {
+                group = vim.api.nvim_create_augroup("treesitter_setup", { clear = true }),
+                callback = function(ev)
+                    if pcall(vim.treesitter.start, ev.buf) then
+                        vim.bo[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+                    end
+                end,
+            })
         end,
     },
 
     {
         "nvim-treesitter/nvim-treesitter-textobjects",
-        after = "nvim-treesitter",
-        requires = "nvim-treesitter/nvim-treesitter",
-    },
-
-    {
-        "nvim-treesitter/nvim-treesitter-refactor",
-        after = "nvim-treesitter",
-        requires = "nvim-treesitter/nvim-treesitter",
+        branch = "main",
+        dependencies = "nvim-treesitter/nvim-treesitter",
         config = function()
-            require("nvim-treesitter.configs").setup {
-                refactor = {
-                    highlight_definitions = { enable = true },
-                    highlight_current_scope = { enable = false },
-                    smart_rename = {
-                        enable = true,
-                        keymaps = {
-                            smart_rename = "grr",
-                        },
-                    },
-                    navigation = {
-                        enable = true,
-                        keymaps = {
-                            goto_definition = "gd",
-                            goto_next_usage = "gu",
-                            goto_previous_usage = "gU",
-                        },
+            require("nvim-treesitter-textobjects").setup {
+                select = {
+                    lookahead = true,
+                    selection_modes = {
+                        ["@function.outer"] = "V",
+                        ["@class.outer"] = "V",
                     },
                 },
             }
+            local textobject_keymaps = {
+                ["aa"] = "@parameter.outer",
+                ["ia"] = "@parameter.inner",
+                ["af"] = "@function.outer",
+                ["if"] = "@function.inner",
+                ["ac"] = "@class.outer",
+                ["ic"] = "@class.inner",
+            }
+            for lhs, capture in pairs(textobject_keymaps) do
+                vim.keymap.set({ "x", "o" }, lhs, function()
+                    require("nvim-treesitter-textobjects.select").select_textobject(capture, "textobjects")
+                end)
+            end
         end,
     },
 
@@ -270,17 +255,19 @@ require("lazy").setup({
         "kylechui/nvim-surround",
         version = "*", -- Use for stability; omit to use `main` branch for the latest features
         event = "VeryLazy",
+        init = function()
+            -- v4 removed the `keymaps` setup option; disable the default
+            -- normal-mode maps and bind our own to the <Plug> mappings.
+            vim.g.nvim_surround_no_normal_mappings = true
+        end,
         config = function()
-            require("nvim-surround").setup({
-                keymaps = {
-                    normal = "sa",
-                    normal_cur = "ssa",
-                    normal_line = "Sa",
-                    normal_cur_line = "SSa",
-                    delete = "sd",
-                    change = "sc",
-                }
-            })
+            require("nvim-surround").setup({})
+            vim.keymap.set("n", "sa", "<Plug>(nvim-surround-normal)", { desc = "Add surrounding pair (motion)" })
+            vim.keymap.set("n", "ssa", "<Plug>(nvim-surround-normal-cur)", { desc = "Add surrounding pair (line)" })
+            vim.keymap.set("n", "Sa", "<Plug>(nvim-surround-normal-line)", { desc = "Add surrounding pair (motion, new lines)" })
+            vim.keymap.set("n", "SSa", "<Plug>(nvim-surround-normal-cur-line)", { desc = "Add surrounding pair (line, new lines)" })
+            vim.keymap.set("n", "sd", "<Plug>(nvim-surround-delete)", { desc = "Delete surrounding pair" })
+            vim.keymap.set("n", "sc", "<Plug>(nvim-surround-change)", { desc = "Change surrounding pair" })
         end
     },
 
@@ -313,6 +300,15 @@ require("lazy").setup({
     {
         "glepnir/dashboard-nvim",
         event = "VimEnter",
+        init = function()
+            -- nvim-terminal.lua (used below for the ANSI header) is abandoned
+            -- and calls vim.tbl_flatten, deprecated and slated for removal in
+            -- nvim 0.13. Replace it with the non-deprecated equivalent so it
+            -- keeps working and stops warning on startup.
+            vim.tbl_flatten = function(t)
+                return vim.iter(t):flatten(math.huge):totable()
+            end
+        end,
         config = function()
             -- TODO: Auto center the header.
             -- local col_str = vim.cmd("set co")
@@ -343,7 +339,7 @@ require("lazy").setup({
     -- More icons
     {
         'yamatsum/nvim-nonicons',
-        requires = {'kyazdani42/nvim-web-devicons'},
+        dependencies = {'nvim-tree/nvim-web-devicons'},
         priority = 500,
     },
 
@@ -370,5 +366,54 @@ require("lazy").setup({
         config = function()
             require("gitsigns").setup {}
         end,
+    },
+
+    -- Git diff viewer
+    {
+        "sindrets/diffview.nvim",
+        dependencies = "nvim-lua/plenary.nvim",
+        opts = {
+            hooks = {
+                -- Keep buffers opened while browsing diffs out of the buffer
+                -- list, so they don't pile up in the tabline.
+                diff_buf_read = function(bufnr)
+                    vim.bo[bufnr].buflisted = false
+                end,
+            },
+            keymaps = {
+                view = {
+                    { "n", "q", "<Cmd>DiffviewClose<CR>", { desc = "Close Diffview" } },
+                },
+                file_panel = {
+                    { "n", "q", "<Cmd>DiffviewClose<CR>", { desc = "Close Diffview" } },
+                },
+                file_history_panel = {
+                    { "n", "q", "<Cmd>DiffviewClose<CR>", { desc = "Close Diffview" } },
+                },
+            },
+        },
+        keys = {
+            {
+                "<leader>gd",
+                function()
+                    if require("diffview.lib").get_current_view() then
+                        vim.cmd("DiffviewClose")
+                    else
+                        vim.cmd("DiffviewOpen")
+                    end
+                end,
+                desc = "Toggle Diffview",
+            },
+        },
+    },
+
+    -- Fuzzy finder
+    {
+        "nvim-telescope/telescope.nvim",
+        branch = "0.1.x",
+        dependencies = "nvim-lua/plenary.nvim",
+        keys = {
+            { "<leader>ft", "<Cmd>Telescope<CR>", desc = "Open Telescope" },
+        },
     },
 })
